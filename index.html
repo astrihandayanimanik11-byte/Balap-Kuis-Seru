@@ -1,0 +1,464 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Balap Kuis Lilac - 6 Players</title>
+    <style>
+        :root {
+            --primary-lilac: #9d8ec7;
+            --light-lilac: #f3effa;
+            --card-lilac: #e2d9f3;
+            --dark-lilac: #4a3b69;
+            --accent-purple: #7b52b9;
+            --white: #ffffff;
+            --shadow: 0 8px 20px rgba(74, 59, 105, 0.15);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: var(--light-lilac);
+            color: var(--dark-lilac);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        h1 {
+            font-size: 2.2rem;
+            color: var(--dark-lilac);
+            margin-bottom: 5px;
+        }
+
+        p.subtitle {
+            color: var(--accent-purple);
+            font-weight: 500;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 1000px;
+            background: var(--white);
+            border-radius: 20px;
+            padding: 25px;
+            box-shadow: var(--shadow);
+            border: 2px solid var(--card-lilac);
+        }
+
+        /* Config Section */
+        .config-section {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .input-group {
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+        }
+
+        label {
+            font-weight: bold;
+            font-size: 0.95rem;
+            color: var(--dark-lilac);
+        }
+
+        input[type="text"] {
+            padding: 12px 15px;
+            border: 2px solid var(--card-lilac);
+            border-radius: 10px;
+            outline: none;
+            font-size: 0.95rem;
+            transition: 0.3s;
+        }
+
+        input[type="text"]:focus {
+            border-color: var(--accent-purple);
+        }
+
+        .player-inputs {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 10px;
+            margin-top: 10px;
+        }
+
+        .btn {
+            background: linear-gradient(135deg, var(--primary-lilac), var(--accent-purple));
+            color: var(--white);
+            border: none;
+            padding: 12px 25px;
+            font-size: 1rem;
+            font-weight: bold;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: transform 0.2s, background 0.3s;
+            box-shadow: 0 4px 10px rgba(123, 82, 185, 0.3);
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            opacity: 0.95;
+        }
+
+        /* Track Area */
+        .race-track-container {
+            background: var(--light-lilac);
+            border-radius: 15px;
+            padding: 15px;
+            margin-bottom: 25px;
+            border: 2px dashed var(--primary-lilac);
+        }
+
+        .lane {
+            display: flex;
+            align-items: center;
+            background: var(--white);
+            margin-bottom: 10px;
+            border-radius: 30px;
+            padding: 5px 15px;
+            position: relative;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+        }
+
+        .player-tag {
+            width: 120px;
+            font-weight: bold;
+            font-size: 0.9rem;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .track {
+            flex-grow: 1;
+            height: 20px;
+            background: var(--card-lilac);
+            border-radius: 10px;
+            margin: 0 10px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .progress-bar {
+            height: 100%;
+            width: 0%;
+            background: linear-gradient(90deg, var(--primary-lilac), var(--accent-purple));
+            border-radius: 10px;
+            transition: width 0.4s ease;
+        }
+
+        .car-icon {
+            font-size: 1.2rem;
+            position: absolute;
+            right: -10px;
+            top: -2px;
+        }
+
+        /* Quiz Area */
+        .quiz-section {
+            background: var(--card-lilac);
+            padding: 20px;
+            border-radius: 15px;
+            display: none;
+        }
+
+        .current-turn {
+            font-size: 1.1rem;
+            font-weight: bold;
+            color: var(--accent-purple);
+            margin-bottom: 15px;
+            text-align: center;
+        }
+
+        .question-box {
+            background: var(--white);
+            padding: 20px;
+            border-radius: 10px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            margin-bottom: 15px;
+            text-align: center;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.05);
+        }
+
+        .options-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 12px;
+        }
+
+        .option-btn {
+            background: var(--white);
+            border: 2px solid var(--primary-lilac);
+            color: var(--dark-lilac);
+            padding: 12px;
+            border-radius: 10px;
+            font-size: 1rem;
+            cursor: pointer;
+            font-weight: 600;
+            transition: 0.2s;
+        }
+
+        .option-btn:hover {
+            background: var(--primary-lilac);
+            color: var(--white);
+        }
+
+        /* Winner Modal */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(74, 59, 105, 0.6);
+            justify-content: center;
+            align-items: center;
+            z-index: 100;
+        }
+
+        .modal-content {
+            background: var(--white);
+            padding: 30px;
+            border-radius: 20px;
+            text-align: center;
+            max-width: 400px;
+            width: 90%;
+            box-shadow: var(--shadow);
+        }
+
+        .modal-content h2 {
+            color: var(--accent-purple);
+            margin-bottom: 10px;
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <h1>🏁 Balap Kuis Lilac</h1>
+        <p class="subtitle">Game Edukasi Multi-Player (Hingga 6 Pemain)</p>
+    </header>
+
+    <div class="container">
+        <!-- Pengaturan Game -->
+        <div id="setup-screen" class="config-section">
+            <div class="input-group">
+                <label for="sheet-url">URL atau ID Spreadsheet Google:</label>
+                <input type="text" id="sheet-url" value="1X39gVlRmk-iyTxgpDhNgd8kkia_fKLaOXT8r7jaSGtg" placeholder="Masukkan Link / ID Spreadsheet">
+            </div>
+
+            <div class="input-group">
+                <label>Nama 6 Pemain:</label>
+                <div class="player-inputs">
+                    <input type="text" id="p1-name" value="Player 1" placeholder="Pemain 1">
+                    <input type="text" id="p2-name" value="Player 2" placeholder="Pemain 2">
+                    <input type="text" id="p3-name" value="Player 3" placeholder="Pemain 3">
+                    <input type="text" id="p4-name" value="Player 4" placeholder="Pemain 4">
+                    <input type="text" id="p5-name" value="Player 5" placeholder="Pemain 5">
+                    <input type="text" id="p6-name" value="Player 6" placeholder="Pemain 6">
+                </div>
+            </div>
+
+            <button class="btn" onclick="startGame()">Mulai Balapan!</button>
+        </div>
+
+        <!-- Area Arena Balap & Kuis -->
+        <div id="game-screen" style="display: none;">
+            <div class="race-track-container" id="tracks-container">
+                <!-- Track 6 player akan di-generate otomatis -->
+            </div>
+
+            <div class="quiz-section" id="quiz-container">
+                <div class="current-turn" id="turn-indicator">Giliran: Player 1</div>
+                <div class="question-box" id="question-text">Memuat Soal...</div>
+                <div class="options-grid" id="options-container">
+                    <!-- Tombol Pilihan Jawaban -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Pemenang -->
+    <div class="modal" id="winner-modal">
+        <div class="modal-content">
+            <h2>🏆 Selamat!</h2>
+            <p id="winner-text" style="font-size: 1.2rem; margin: 15px 0;"></p>
+            <button class="btn" onclick="location.reload()">Main Lagi</button>
+        </div>
+    </div>
+
+    <script>
+        let questions = [];
+        let currentQuestionIndex = 0;
+        let activePlayerIndex = 0;
+        let players = [];
+        const TOTAL_PLAYERS = 6;
+        const TARGET_SCORE = 100; // Skor untuk mencapai garis finish
+
+        // Ekstraksi ID dari URL Spreadsheet
+        function extractSpreadsheetId(urlOrId) {
+            const match = urlOrId.match(/\/d\/([a-zA-Z0-9-_]+)/);
+            return match ? match[1] : urlOrId.trim();
+        }
+
+        // Ambil Data CSV dari Spreadsheet Publik
+        async function fetchQuestions(sheetId) {
+            const csvUrl = `https://docs.google.com/spreadsheets/d/${sheetId}/gviz/tq?tqx=out:csv`;
+            try {
+                const response = await fetch(csvUrl);
+                const data = await response.text();
+                return parseCSV(data);
+            } catch (error) {
+                alert("Gagal mengambil data dari Google Spreadsheet. Pastikan Spreadsheet diset ke 'Siapa saja yang memiliki link' (Public).");
+                return [];
+            }
+        }
+
+        // Parsing CSV Soal
+        function parseCSV(text) {
+            const lines = text.split('\n');
+            const result = [];
+
+            for (let i = 0; i < lines.length; i++) {
+                if (!lines[i].trim()) continue;
+                
+                // Regex parsing CSV untuk menangani koma di dalam tanda kutip
+                const row = lines[i].match(/(".*?"|[^",\s]+)(?=\s*,|\s*$)/g) || lines[i].split(',');
+                const cleanRow = row.map(cell => cell.replace(/^"(.*)"$/, '$1').trim());
+
+                if (cleanRow.length >= 6) {
+                    const question = cleanRow[0];
+                    const optA = cleanRow[1];
+                    const optB = cleanRow[2];
+                    const optC = cleanRow[3];
+                    const optD = cleanRow[4];
+                    const correctKey = cleanRow[5].toUpperCase(); // misal: 'A', 'B', 'C', atau 'D'
+
+                    let correctIndex = 0;
+                    if (correctKey === 'B') correctIndex = 1;
+                    if (correctKey === 'C') correctIndex = 2;
+                    if (correctKey === 'D') correctIndex = 3;
+
+                    result.push({
+                        question: question,
+                        options: [optA, optB, optC, optD],
+                        answer: correctIndex
+                    });
+                }
+            }
+            return result;
+        }
+
+        async function startGame() {
+            const rawSheetInput = document.getElementById('sheet-url').value;
+            const sheetId = extractSpreadsheetId(rawSheetInput);
+
+            if (!sheetId) {
+                alert("Silakan masukkan ID atau Link Google Spreadsheet!");
+                return;
+            }
+
+            questions = await fetchQuestions(sheetId);
+
+            if (questions.length === 0) {
+                alert("Tidak ada soal yang dapat dibaca. Cek kembali format spreadsheet Anda.");
+                return;
+            }
+
+            // Inisialisasi Player
+            players = [];
+            for (let i = 1; i <= TOTAL_PLAYERS; i++) {
+                const name = document.getElementById(`p${i}-name`).value || `Player ${i}`;
+                players.push({ name: name, score: 0 });
+            }
+
+            document.getElementById('setup-screen').style.display = 'none';
+            document.getElementById('game-screen').style.display = 'block';
+            document.getElementById('quiz-container').style.display = 'block';
+
+            renderTracks();
+            loadNextQuestion();
+        }
+
+        function renderTracks() {
+            const container = document.getElementById('tracks-container');
+            container.innerHTML = '';
+
+            players.forEach((player, index) => {
+                const lane = document.createElement('div');
+                lane.className = 'lane';
+                lane.innerHTML = `
+                    <div class="player-tag">${player.name}</div>
+                    <div class="track">
+                        <div class="progress-bar" id="pb-${index}" style="width: 0%;">
+                            <span class="car-icon">🏎️</span>
+                        </div>
+                    </div>
+                `;
+                container.appendChild(lane);
+            });
+        }
+
+        function loadNextQuestion() {
+            if (questions.length === 0) return;
+
+            // Mengulang soal secara melingkar jika jumlah soal terbatas/sudah habis
+            const q = questions[currentQuestionIndex % questions.length];
+
+            document.getElementById('turn-indicator').innerText = `🎯 Giliran: ${players[activePlayerIndex].name}`;
+            document.getElementById('question-text').innerText = q.question;
+
+            const optionsContainer = document.getElementById('options-container');
+            optionsContainer.innerHTML = '';
+
+            q.options.forEach((opt, idx) => {
+                const btn = document.createElement('button');
+                btn.className = 'option-btn';
+                btn.innerText = opt;
+                btn.onclick = () => handleAnswer(idx === q.answer);
+                optionsContainer.appendChild(btn);
+            });
+        }
+
+        function handleAnswer(isCorrect) {
+            if (isCorrect) {
+                // Maju 20% setiap jawaban benar (5 kali benar untuk finish)
+                players[activePlayerIndex].score += 20;
+                const currentScore = players[activePlayerIndex].score;
+                
+                document.getElementById(`pb-${activePlayerIndex}`).style.width = `${currentScore}%`;
+
+                if (currentScore >= TARGET_SCORE) {
+                    showWinner(players[activePlayerIndex].name);
+                    return;
+                }
+            }
+
+            // Ganti Giliran Pemain & Lanjut ke Soal Berikutnya
+            activePlayerIndex = (activePlayerIndex + 1) % TOTAL_PLAYERS;
+            currentQuestionIndex++;
+            loadNextQuestion();
+        }
+
+        function showWinner(name) {
+            document.getElementById('winner-text').innerText = `${name} Menang Dalam Balapan! 🎉`;
+            document.getElementById('winner-modal').style.display = 'flex';
+        }
+    </script>
+</body>
+</html>
