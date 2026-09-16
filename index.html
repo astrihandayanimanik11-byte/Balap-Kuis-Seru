@@ -3,16 +3,18 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Balap Kuis Lilac - 6 Players</title>
+    <title>Balap Kuis Trivia - Lilac Edition</title>
     <style>
         :root {
-            --primary-lilac: #9d8ec7;
-            --light-lilac: #f3effa;
-            --card-lilac: #e2d9f3;
-            --dark-lilac: #4a3b69;
-            --accent-purple: #7b52b9;
+            --primary-lilac: #9b72cf;
+            --light-lilac: #f3eefc;
+            --card-lilac: #e2d7f5;
+            --dark-lilac: #3c2a4d;
+            --accent-purple: #7b42bc;
+            --correct-green: #68d391;
+            --wrong-red: #fc8181;
             --white: #ffffff;
-            --shadow: 0 8px 20px rgba(74, 59, 105, 0.15);
+            --shadow: 0 8px 25px rgba(60, 42, 77, 0.12);
         }
 
         * {
@@ -41,16 +43,17 @@
             font-size: 2.2rem;
             color: var(--dark-lilac);
             margin-bottom: 5px;
+            letter-spacing: 1px;
         }
 
         p.subtitle {
             color: var(--accent-purple);
-            font-weight: 500;
+            font-weight: 600;
         }
 
         .container {
             width: 100%;
-            max-width: 1000px;
+            max-width: 950px;
             background: var(--white);
             border-radius: 20px;
             padding: 25px;
@@ -58,18 +61,17 @@
             border: 2px solid var(--card-lilac);
         }
 
-        /* Config Section */
-        .config-section {
+        /* Config Form */
+        .setup-screen {
             display: flex;
             flex-direction: column;
             gap: 15px;
-            margin-bottom: 20px;
         }
 
-        .input-group {
+        .form-group {
             display: flex;
             flex-direction: column;
-            gap: 5px;
+            gap: 6px;
         }
 
         label {
@@ -91,24 +93,24 @@
             border-color: var(--accent-purple);
         }
 
-        .player-inputs {
+        .player-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
             gap: 10px;
-            margin-top: 10px;
         }
 
         .btn {
             background: linear-gradient(135deg, var(--primary-lilac), var(--accent-purple));
             color: var(--white);
             border: none;
-            padding: 12px 25px;
+            padding: 14px 28px;
             font-size: 1rem;
             font-weight: bold;
-            border-radius: 10px;
+            border-radius: 12px;
             cursor: pointer;
             transition: transform 0.2s, background 0.3s;
-            box-shadow: 0 4px 10px rgba(123, 82, 185, 0.3);
+            box-shadow: 0 4px 15px rgba(123, 66, 188, 0.3);
+            margin-top: 10px;
         }
 
         .btn:hover {
@@ -116,24 +118,25 @@
             opacity: 0.95;
         }
 
-        /* Track Area */
+        /* Arena Balap */
         .race-track-container {
             background: var(--light-lilac);
             border-radius: 15px;
             padding: 15px;
             margin-bottom: 25px;
             border: 2px dashed var(--primary-lilac);
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
         }
 
         .lane {
             display: flex;
             align-items: center;
             background: var(--white);
-            margin-bottom: 10px;
             border-radius: 30px;
-            padding: 5px 15px;
-            position: relative;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+            padding: 6px 15px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.03);
         }
 
         .player-tag {
@@ -145,7 +148,7 @@
             text-overflow: ellipsis;
         }
 
-        .track {
+        .track-line {
             flex-grow: 1;
             height: 20px;
             background: var(--card-lilac);
@@ -161,16 +164,17 @@
             background: linear-gradient(90deg, var(--primary-lilac), var(--accent-purple));
             border-radius: 10px;
             transition: width 0.4s ease;
+            position: relative;
         }
 
         .car-icon {
-            font-size: 1.2rem;
+            font-size: 1.1rem;
             position: absolute;
-            right: -10px;
+            right: -8px;
             top: -2px;
         }
 
-        /* Quiz Area */
+        /* Quiz Section */
         .quiz-section {
             background: var(--card-lilac);
             padding: 20px;
@@ -178,28 +182,46 @@
             display: none;
         }
 
-        .current-turn {
-            font-size: 1.1rem;
-            font-weight: bold;
-            color: var(--accent-purple);
+        .quiz-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
             margin-bottom: 15px;
-            text-align: center;
         }
 
-        .question-box {
+        .turn-badge {
+            background: var(--accent-purple);
+            color: var(--white);
+            padding: 6px 16px;
+            border-radius: 20px;
+            font-weight: 600;
+            font-size: 0.95rem;
+        }
+
+        .q-count {
+            font-weight: 600;
+            color: var(--dark-lilac);
+            font-size: 0.9rem;
+        }
+
+        .question-card {
             background: var(--white);
             padding: 20px;
-            border-radius: 10px;
+            border-radius: 12px;
             font-size: 1.1rem;
             font-weight: 600;
             margin-bottom: 15px;
             text-align: center;
-            box-shadow: 0 4px 8px rgba(0,0,0,0.05);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.04);
+            min-height: 70px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
 
         .options-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
             gap: 12px;
         }
 
@@ -207,12 +229,13 @@
             background: var(--white);
             border: 2px solid var(--primary-lilac);
             color: var(--dark-lilac);
-            padding: 12px;
+            padding: 12px 15px;
             border-radius: 10px;
-            font-size: 1rem;
-            cursor: pointer;
+            font-size: 0.95rem;
             font-weight: 600;
-            transition: 0.2s;
+            cursor: pointer;
+            text-align: left;
+            transition: all 0.2s;
         }
 
         .option-btn:hover {
@@ -220,18 +243,18 @@
             color: var(--white);
         }
 
-        /* Winner Modal */
+        /* Modal */
         .modal {
             display: none;
             position: fixed;
             top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(74, 59, 105, 0.6);
+            background: rgba(60, 42, 77, 0.7);
             justify-content: center;
             align-items: center;
             z-index: 100;
         }
 
-        .modal-content {
+        .modal-body {
             background: var(--white);
             padding: 30px;
             border-radius: 20px;
@@ -241,7 +264,7 @@
             box-shadow: var(--shadow);
         }
 
-        .modal-content h2 {
+        .modal-body h2 {
             color: var(--accent-purple);
             margin-bottom: 10px;
         }
@@ -250,43 +273,46 @@
 <body>
 
     <header>
-        <h1>🏁 Balap Kuis Lilac</h1>
-        <p class="subtitle">Game Edukasi Multi-Player (Hingga 6 Pemain)</p>
+        <h1>🏎️ BALAP KUIS TRIVIA</h1>
+        <p class="subtitle">Game Edukasi Multi-Player (6 Pemain)</p>
     </header>
 
     <div class="container">
         <!-- Pengaturan Game -->
-        <div id="setup-screen" class="config-section">
-            <div class="input-group">
-                <label for="sheet-url">URL atau ID Spreadsheet Google:</label>
-                <input type="text" id="sheet-url" value="1X39gVlRmk-iyTxgpDhNgd8kkia_fKLaOXT8r7jaSGtg" placeholder="Masukkan Link / ID Spreadsheet">
+        <div id="setup-screen" class="setup-screen">
+            <div class="form-group">
+                <label for="sheet-id">ID atau URL Google Spreadsheet:</label>
+                <input type="text" id="sheet-id" placeholder="Contoh: 1BssaGcougen7R_fsOQeGC7RDhOhbzUDcBrdymigVoME">
             </div>
 
-            <div class="input-group">
-                <label>Nama 6 Pemain:</label>
-                <div class="player-inputs">
-                    <input type="text" id="p1-name" value="Player 1" placeholder="Pemain 1">
-                    <input type="text" id="p2-name" value="Player 2" placeholder="Pemain 2">
-                    <input type="text" id="p3-name" value="Player 3" placeholder="Pemain 3">
-                    <input type="text" id="p4-name" value="Player 4" placeholder="Pemain 4">
-                    <input type="text" id="p5-name" value="Player 5" placeholder="Pemain 5">
-                    <input type="text" id="p6-name" value="Player 6" placeholder="Pemain 6">
+            <div class="form-group">
+                <label>Nama Pemain (6 Players):</label>
+                <div class="player-grid">
+                    <input type="text" id="p1" value="Pemain 1" placeholder="Pemain 1">
+                    <input type="text" id="p2" value="Pemain 2" placeholder="Pemain 2">
+                    <input type="text" id="p3" value="Pemain 3" placeholder="Pemain 3">
+                    <input type="text" id="p4" value="Pemain 4" placeholder="Pemain 4">
+                    <input type="text" id="p5" value="Pemain 5" placeholder="Pemain 5">
+                    <input type="text" id="p6" value="Pemain 6" placeholder="Pemain 6">
                 </div>
             </div>
 
-            <button class="btn" onclick="startGame()">Mulai Balapan!</button>
+            <button class="btn" onclick="initGame()">Mulai Permainan</button>
         </div>
 
-        <!-- Area Arena Balap & Kuis -->
+        <!-- Area Balap & Kuis -->
         <div id="game-screen" style="display: none;">
-            <div class="race-track-container" id="tracks-container">
-                <!-- Track 6 player akan di-generate otomatis -->
+            <div class="race-track-container" id="tracks-area">
+                <!-- Track 6 Player di-generate via JS -->
             </div>
 
-            <div class="quiz-section" id="quiz-container">
-                <div class="current-turn" id="turn-indicator">Giliran: Player 1</div>
-                <div class="question-box" id="question-text">Memuat Soal...</div>
-                <div class="options-grid" id="options-container">
+            <div class="quiz-section" id="quiz-area">
+                <div class="quiz-header">
+                    <span class="turn-badge" id="turn-indicator">Giliran: Pemain 1</span>
+                    <span class="q-count" id="q-count-indicator">Soal 1</span>
+                </div>
+                <div class="question-card" id="question-text">Memuat Pertanyaan...</div>
+                <div class="options-grid" id="options-area">
                     <!-- Tombol Pilihan Jawaban -->
                 </div>
             </div>
@@ -295,117 +321,127 @@
 
     <!-- Modal Pemenang -->
     <div class="modal" id="winner-modal">
-        <div class="modal-content">
+        <div class="modal-body">
             <h2>🏆 Selamat!</h2>
-            <p id="winner-text" style="font-size: 1.2rem; margin: 15px 0;"></p>
+            <p id="winner-name" style="font-size: 1.2rem; margin: 15px 0; font-weight: bold;"></p>
             <button class="btn" onclick="location.reload()">Main Lagi</button>
         </div>
     </div>
 
     <script>
         let questions = [];
-        let currentQuestionIndex = 0;
-        let activePlayerIndex = 0;
+        let currentQuestionIdx = 0;
+        let activePlayerIdx = 0;
         let players = [];
         const TOTAL_PLAYERS = 6;
-        const TARGET_SCORE = 100; // Skor untuk mencapai garis finish
+        const TARGET_SCORE = 100; // Capai 100% untuk garis finish
 
-        // Ekstraksi ID dari URL Spreadsheet
-        function extractSpreadsheetId(urlOrId) {
-            const match = urlOrId.match(/\/d\/([a-zA-Z0-9-_]+)/);
-            return match ? match[1] : urlOrId.trim();
+        // Deteksi parameter `?id=` di URL saat halaman pertama kali dibuka
+        window.addEventListener('DOMContentLoaded', () => {
+            const urlParams = new URLSearchParams(window.location.search);
+            const idFromUrl = urlParams.get('id');
+            if (idFromUrl) {
+                document.getElementById('sheet-id').value = idFromUrl;
+            } else {
+                // Default ID jika tidak ada di URL
+                document.getElementById('sheet-id').value = "1BssaGcougen7R_fsOQeGC7RDhOhbzUDcBrdymigVoME";
+            }
+        });
+
+        // Ekstraksi ID Spreadsheet dari input/URL
+        function parseSpreadsheetId(input) {
+            const match = input.match(/\/d\/([a-zA-Z0-9-_]+)/);
+            return match ? match[1] : input.trim();
         }
 
-        // Ambil Data CSV dari Spreadsheet Publik
+        // Ambil CSV dari Spreadsheet Publik
         async function fetchQuestions(sheetId) {
-            const csvUrl = `https://docs.google.com/spreadsheets/d/${sheetId}/gviz/tq?tqx=out:csv`;
+            const url = `https://docs.google.com/spreadsheets/d/${sheetId}/gviz/tq?tqx=out:csv`;
             try {
-                const response = await fetch(csvUrl);
-                const data = await response.text();
-                return parseCSV(data);
-            } catch (error) {
-                alert("Gagal mengambil data dari Google Spreadsheet. Pastikan Spreadsheet diset ke 'Siapa saja yang memiliki link' (Public).");
+                const response = await fetch(url);
+                if (!response.ok) throw new Error();
+                const text = await response.text();
+                return parseCSV(text);
+            } catch (err) {
+                alert("Gagal membaca Spreadsheet! Pastikan link Spreadsheet disetel ke 'Siapa saja yang memiliki link' (Public).");
                 return [];
             }
         }
 
-        // Parsing CSV Soal
-        function parseCSV(text) {
-            const lines = text.split('\n');
-            const result = [];
+        // Parser CSV yang handal untuk membaca semua baris soal tanpa batas
+        function parseCSV(csvText) {
+            const lines = csvText.split('\n');
+            const data = [];
 
-            for (let i = 0; i < lines.length; i++) {
-                if (!lines[i].trim()) continue;
+            for (let line of lines) {
+                if (!line.trim()) continue;
                 
-                // Regex parsing CSV untuk menangani koma di dalam tanda kutip
-                const row = lines[i].match(/(".*?"|[^",\s]+)(?=\s*,|\s*$)/g) || lines[i].split(',');
+                // Regex parsing CSV untuk mengolah koma dalam petik
+                const row = line.match(/(".*?"|[^",\s]+)(?=\s*,|\s*$)/g) || line.split(',');
                 const cleanRow = row.map(cell => cell.replace(/^"(.*)"$/, '$1').trim());
 
                 if (cleanRow.length >= 6) {
                     const question = cleanRow[0];
-                    const optA = cleanRow[1];
-                    const optB = cleanRow[2];
-                    const optC = cleanRow[3];
-                    const optD = cleanRow[4];
-                    const correctKey = cleanRow[5].toUpperCase(); // misal: 'A', 'B', 'C', atau 'D'
+                    const opts = [cleanRow[1], cleanRow[2], cleanRow[3], cleanRow[4]];
+                    const answerKey = cleanRow[5].toUpperCase();
 
-                    let correctIndex = 0;
-                    if (correctKey === 'B') correctIndex = 1;
-                    if (correctKey === 'C') correctIndex = 2;
-                    if (correctKey === 'D') correctIndex = 3;
+                    let correctIdx = 0;
+                    if (answerKey === 'B') correctIdx = 1;
+                    if (answerKey === 'C') correctIdx = 2;
+                    if (answerKey === 'D') correctIdx = 3;
 
-                    result.push({
+                    data.push({
                         question: question,
-                        options: [optA, optB, optC, optD],
-                        answer: correctIndex
+                        options: opts,
+                        answer: correctIdx
                     });
                 }
             }
-            return result;
+            return data;
         }
 
-        async function startGame() {
-            const rawSheetInput = document.getElementById('sheet-url').value;
-            const sheetId = extractSpreadsheetId(rawSheetInput);
+        async function initGame() {
+            const rawId = document.getElementById('sheet-id').value;
+            const sheetId = parseSpreadsheetId(rawId);
 
             if (!sheetId) {
-                alert("Silakan masukkan ID atau Link Google Spreadsheet!");
+                alert("Masukkan ID atau URL Spreadsheet yang valid!");
                 return;
             }
 
             questions = await fetchQuestions(sheetId);
 
             if (questions.length === 0) {
-                alert("Tidak ada soal yang dapat dibaca. Cek kembali format spreadsheet Anda.");
+                alert("Format Spreadsheet tidak valid atau soal kosong.");
                 return;
             }
 
-            // Inisialisasi Player
+            // Inisialisasi Data 6 Pemain
             players = [];
             for (let i = 1; i <= TOTAL_PLAYERS; i++) {
-                const name = document.getElementById(`p${i}-name`).value || `Player ${i}`;
+                const name = document.getElementById(`p${i}`).value.trim() || `Pemain ${i}`;
                 players.push({ name: name, score: 0 });
             }
 
             document.getElementById('setup-screen').style.display = 'none';
             document.getElementById('game-screen').style.display = 'block';
-            document.getElementById('quiz-container').style.display = 'block';
+            document.getElementById('quiz-area').style.display = 'block';
 
             renderTracks();
-            loadNextQuestion();
+            displayQuestion();
         }
 
         function renderTracks() {
-            const container = document.getElementById('tracks-container');
+            const container = document.getElementById('tracks-area');
             container.innerHTML = '';
 
-            players.forEach((player, index) => {
+            players.forEach((player, i) => {
                 const lane = document.createElement('div');
                 lane.className = 'lane';
                 lane.innerHTML = `
                     <div class="player-tag">${player.name}</div>
-                    <div class="track">
-                        <div class="progress-bar" id="pb-${index}" style="width: 0%;">
+                    <div class="track-line">
+                        <div class="progress-bar" id="pb-${i}">
                             <span class="car-icon">🏎️</span>
                         </div>
                     </div>
@@ -414,49 +450,51 @@
             });
         }
 
-        function loadNextQuestion() {
+        function displayQuestion() {
             if (questions.length === 0) return;
 
-            // Mengulang soal secara melingkar jika jumlah soal terbatas/sudah habis
-            const q = questions[currentQuestionIndex % questions.length];
+            // Mengulang soal secara melingkar (loop) jika jumlah soal terbatas
+            const q = questions[currentQuestionIdx % questions.length];
 
-            document.getElementById('turn-indicator').innerText = `🎯 Giliran: ${players[activePlayerIndex].name}`;
+            document.getElementById('turn-indicator').innerText = `🎯 Giliran: ${players[activePlayerIdx].name}`;
+            document.getElementById('q-count-indicator').innerText = `Soal #${currentQuestionIdx + 1}`;
             document.getElementById('question-text').innerText = q.question;
 
-            const optionsContainer = document.getElementById('options-container');
-            optionsContainer.innerHTML = '';
+            const optionsArea = document.getElementById('options-area');
+            optionsArea.innerHTML = '';
 
+            const labels = ['A', 'B', 'C', 'D'];
             q.options.forEach((opt, idx) => {
                 const btn = document.createElement('button');
                 btn.className = 'option-btn';
-                btn.innerText = opt;
-                btn.onclick = () => handleAnswer(idx === q.answer);
-                optionsContainer.appendChild(btn);
+                btn.innerText = `${labels[idx]}. ${opt}`;
+                btn.onclick = () => checkAnswer(idx === q.answer);
+                optionsArea.appendChild(btn);
             });
         }
 
-        function handleAnswer(isCorrect) {
+        function checkAnswer(isCorrect) {
             if (isCorrect) {
-                // Maju 20% setiap jawaban benar (5 kali benar untuk finish)
-                players[activePlayerIndex].score += 20;
-                const currentScore = players[activePlayerIndex].score;
-                
-                document.getElementById(`pb-${activePlayerIndex}`).style.width = `${currentScore}%`;
+                // Setiap jawaban benar menambah progres 20% (5 jawaban benar = finish)
+                players[activePlayerIdx].score += 20;
+                const currentScore = players[activePlayerIdx].score;
+
+                document.getElementById(`pb-${activePlayerIdx}`).style.width = `${currentScore}%`;
 
                 if (currentScore >= TARGET_SCORE) {
-                    showWinner(players[activePlayerIndex].name);
+                    finishGame(players[activePlayerIdx].name);
                     return;
                 }
             }
 
-            // Ganti Giliran Pemain & Lanjut ke Soal Berikutnya
-            activePlayerIndex = (activePlayerIndex + 1) % TOTAL_PLAYERS;
-            currentQuestionIndex++;
-            loadNextQuestion();
+            // Rotasi giliran pemain & lanjut ke soal berikutnya
+            activePlayerIdx = (activePlayerIdx + 1) % TOTAL_PLAYERS;
+            currentQuestionIdx++;
+            displayQuestion();
         }
 
-        function showWinner(name) {
-            document.getElementById('winner-text').innerText = `${name} Menang Dalam Balapan! 🎉`;
+        function finishGame(winnerName) {
+            document.getElementById('winner-name').innerText = `${winnerName} Menang Dalam Balapan! 🎉`;
             document.getElementById('winner-modal').style.display = 'flex';
         }
     </script>
